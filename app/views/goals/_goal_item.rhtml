@@ -1,0 +1,15 @@
+<% if @goal_edited == false %>
+<% goal_div = goal.id.to_s.insert(0,"goal_") %>
+<li id="<%= goal_div %>">
+<% end %>
+	<%= image_tag("drag.png", :title => "Drag to a new position", :class => 'drag-image' ) %>
+	
+	<%= link_to_remote check_box('goal', 'completed_at'), :url => { :action => 'complete_goal', :id => goal },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>
+			
+	<%= link_to goal.description, :action => 'show', :id => goal %>
+		
+<% if @goal_edited == false %>
+</li>
+<% end %>

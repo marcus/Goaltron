@@ -1,0 +1,9 @@
+<%= error_messages_for 'goal' %>
+
+<!--[form:goal]-->
+<p><label for="goal_description">Name:</label><br/>
+<%= text_field 'goal', 'description'  %>
+<p><label for="goal_information">Describe the Goal (optional):</label><br/>
+<%= text_area 'goal', 'information', :rows => 4 %>
+
+<!--[eoform:goal]-->

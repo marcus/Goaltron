@@ -1,0 +1,15 @@
+<div id="article_display_main">
+
+	<% if @articles.any? %>
+
+		<% for article in @articles %>
+		<%= render :partial => '/articles/article_display', :locals => {:article => article}%>
+		<% end %>		
+
+	<% else -%>
+		Nothing here yet. Get things <%= link_to "started", :controller => 'articles', :action => 'new' %>!
+	<% end -%>
+</div><!-- end article_display_main -->
+<div id="article_display_sidebar">
+	<%= render :partial => '/shared/sidebar' %>
+</div>

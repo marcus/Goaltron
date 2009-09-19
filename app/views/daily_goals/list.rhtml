@@ -1,0 +1,23 @@
+<div id="list_daily_goal">
+	<h2>These are your active dailies:</h2>
+	<p class="instructions">
+		Click the <%=image_tag "remove.png", :width => 16, :height => 16 %> to deactivate a daily. You can always activate it again later.
+	</p>
+	<div id="active_goals">
+		<%= render :partial => 'active_goal', :collection => @active_goals %>
+	</div>
+
+	<h2>These are your inactive dailies:</h2>
+	<p class="instructions">
+		Click the <%= image_tag "add.png", :width => 16, :height => 16 %> to activate a daily, <%= image_tag "delete.png", :height=>16, :width=> 16 %> to remove it forever.
+	</p>
+
+	<div id="inactive_goals">
+		<%= render :partial => 'inactive_goal', :collection => @inactive_goals %>
+	</div>
+</div>
+
+<div id="create_daily_goal">
+	<h2>Create a new daily:</h2>
+	<p><%= render :partial => 'form' %></p>
+</div>

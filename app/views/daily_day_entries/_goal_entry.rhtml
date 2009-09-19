@@ -1,0 +1,21 @@
+<% content_tag_for(:div, goal_entry) do %>
+	<div class="star">
+		<% if goal_entry.completed -%>
+			<%= link_to_remote image_tag("complete.png", :width => 60, :height => 60),
+				:url => { :action => 'update', :id => goal_entry.id, :completed => false },
+				:loading => 'show_loader()', :complete => 'hide_loader()'  %>
+		<% else -%>
+			<%= link_to_remote image_tag("incomplete.png", :width => 60, :height => 60),
+				:url => { :action => 'update', :id => goal_entry.id, :completed => true },
+				:loading => 'show_loader()', :complete => 'hide_loader()'  %>
+		<% end -%>
+	</div>
+	<div class="goal_text">
+		<div class="goal_name">
+			<%= h goal_entry.daily_goal.name %>
+		</div>
+		<div class="goal_description">
+			<%= h goal_entry.daily_goal.description %>
+		</div>
+	</div>
+<% end %>

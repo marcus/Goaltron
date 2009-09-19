@@ -1,0 +1,6 @@
+<%= link_to_remote image_tag("remove.png", :class => 'remove-image', :width => 16, :height => 16),
+	:url => {:action => 'deactivate', :id => active_goal}, 
+	:loading => 'show_loader()', :complete => 'hide_loader()' %>
+<%= link_to_remote_redbox image_tag("edit.png", :class => 'edit-image', :width => 16, :height => 16),
+	:url => {:action => 'update', :id => active_goal} %>
+<%= h active_goal.name %> - <span class="goal_list_description"><%= h active_goal.description %></span><br />

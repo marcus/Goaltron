@@ -1,0 +1,18 @@
+
+<div id="navigate">
+	<%= render :partial => 'shared/directional_navigation', :locals => { :date => @date }%>
+	<span class="date"><%= @journal_entry.entry_date.to_s(:long) %> <span class="title-sub-link"><%= link_to "edit", :action => 'edit', :id => @journal_entry %> | <%= link_to 'dailies', :controller => 'daily', :action => 'index', :date => @date %></span></span>
+</div>
+
+
+
+<div id="journal_entry">
+	<h3>What happened.</h3>
+	<p><%= white_list @journal_entry.good %></p>
+	
+	<h3>What could be improved.</h3>
+	<p><%= white_list @journal_entry.bad %></p>
+</div>
+
+<div id="journal_entry_right">
+ </div>

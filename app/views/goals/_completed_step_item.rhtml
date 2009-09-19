@@ -1,0 +1,14 @@
+<% step_div = step.id.to_s.insert(0,"complete_step_") %>
+
+<li id="<%= step_div %>">
+			
+	<%= link_to_remote image_tag('/images/cancel.png', :border => 0, :title => "Permanently delete this step", :class=> 'cancel-image'), :url => { :action => 'delete_step', :id => step },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>
+	
+	<%= link_to_remote check_box('step', 'completed_at', :checked => "checked"), :url => { :action => 'uncomplete_step', :id => step },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>
+	
+	<%= step.completed_at.strftime("%m/%d/%y") %>: <%= step.description %> 
+</li>

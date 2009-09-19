@@ -1,0 +1,9 @@
+<%= link_to_remote image_tag("add.png", :class => 'add-image', :width => 16, :height => 16),
+	:url => {:action => 'activate', :id => inactive_goal}, 
+	:loading => 'show_loader()', :complete => 'hide_loader()' %>
+<%= link_to_remote_redbox image_tag("edit.png", :class => 'edit-image', :width => 16, :height => 16),
+	:url => {:action => 'update', :id => inactive_goal} %>
+<%= link_to_remote image_tag("delete.png", :class => 'delete-image', :width => 16, :height => 16),
+	:url => {:action => 'destroy', :id => inactive_goal},
+	:confirm => 'Are you sure? This deletes all past data for this goal.' %>
+<%= h inactive_goal.name %> - <span class="goal_list_description"><%= h inactive_goal.description %></span><br />

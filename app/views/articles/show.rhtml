@@ -1,0 +1,23 @@
+<div id="article_display_main">
+	<%= render :partial => 'article_display', :locals => {:article => @article}%>
+
+	<div id="comments">
+	
+		<div id="root_comment">
+			<%= link_to_remote "Comment on this Article",
+				:url => { :controller => 'comments', :action => 'reply', :article => @article },
+				:loading => 'show_loader()', :complete => 'hide_loader()'  %>
+		</div>
+		<div id="reply_form_fixnum_1"></div><!-- This is obviously a hack. -->
+		<ul>
+			<% for comment in @article.comments.roots %>
+				<%= render :partial => 'comments/comment', :locals => {:comment => comment}%>
+			<% end %>
+		</ul>
+	
+	</div><!-- end comments -->
+</div><!-- end article_display_main -->
+
+<div id="article_display_sidebar">
+	
+</div>

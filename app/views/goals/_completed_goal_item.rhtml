@@ -1,0 +1,17 @@
+<% goal_div = goal.id.to_s.insert(0,"complete_goal_") %>
+
+<li id="<%= goal_div %>">
+
+	<%= link_to_remote image_tag('/images/cancel.png', :border => 0, :title => "Permanently delete this goal", :class => 'cancel-image'),
+	:confirm => 'This will delete the goal and any related steps/entries permanently',
+	:url => { :action => 'delete_goal', :id => goal },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>
+	
+	<%= link_to_remote check_box('goal', 'completed_at', :checked => "checked"),
+	:url => { :action => 'uncomplete_goal', :id => goal },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>
+
+	<%= link_to goal.description, :action => 'show', :id => goal %> : Completed <%= goal.completed_at.strftime("%m/%d/%y") %>
+</li>

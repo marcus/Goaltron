@@ -1,0 +1,30 @@
+<li>
+	<% content_tag_for(:div, comment) do %>
+		<div class="post_content">
+			<% if comment.ancestors[0] != nil %>
+				<span class="re">Re: <%= comment.ancestors[0].user.login %></span>
+			<% end %>
+			<%= comment.body %><br /><br />
+
+			<div class="post_info">
+				Posted by : <%= comment.user.login %> at <%= comment.created_at.to_s(:short)%>
+				<!-- TODO: Extract reply button to a partial that will toggle comment form -->
+			<span id="comment_reply_comment_<%= comment.id %>">
+				<%= render :partial => 'comments/reply_link', :locals => {"comment" => comment} %>
+			</span>
+			</div><!-- end post_info-->
+			
+		</div><!--end post_content-->
+				
+		<ul>
+			<% content_tag_for(:div, comment, "reply_form") do %><% end %>
+			
+			<% content_tag_for(:div, comment, "reply") do %>
+				<% for comment in comment.children %>
+					<%= render :partial => 'comments/comment', :locals => {:comment => comment}%>
+				<% end %>	
+			<% end %>
+		</ul>
+	
+	<% end %>
+</li>

@@ -1,0 +1,20 @@
+Welcome to Goaltron!
+
+Here's how to get quickly started with your own local copy:
+1) create dabatase goaltron_development, (set your database.yml appropriately)
+2) rake db:migrate
+3) ruby script/setup
+4) ruby script/server
+voila!
+
+Check the models/ in this directory for some details on how this app works.
+
+The models with any complication in them:
+	daily_day_entry : Each row is one user's day in the db
+	daily_goal : A users defined goals
+
+The controllers:
+	daily_day_entries_controller : Manages clicking the stars on the main /daily page
+	daily_goals_controller : Manages the "change goals" page...
+
+Run "rake appdoc" to generate API documentation for the models and controllers.

@@ -1,0 +1,29 @@
+<div id="navigate">
+	<%= render :partial => 'shared/directional_navigation', :locals => { :date => @journal_entry.entry_date }%>
+	<span class="date"><%= @journal_entry.entry_date.to_s(:long) %></span>
+</div>
+
+<%= error_messages_for :journal_entry %>
+
+<% form_for(:journal_entry, :url => journal_entry_path(@journal_entry), :html => { :method => :put }) do |f| %>
+<div id="journal_entry">
+		<h3>What happened?</h3>
+			<div class="journal_section">
+				<p class="instructions">What contributed in a positive way to your life? Include events that were out of your control.</p>
+				<p><%= f.text_area :good, :rows => 7 %></p>
+			</div>
+		<h3>What could be improved?</h3>
+			<p class="instructions">What caused went wrong or caused stress? What should you have done, but didn't? Why are you avoiding it?</p>
+			<p><%= f.text_area :bad, :rows => 5 %></p>
+			
+		<p><%= submit_tag "Save" %> | <%= link_to 'Cancel', :action => 'index', :date => @journal_entry.entry_date %></p>
+</div>
+
+<div id="journal_entry_right">
+			
+	<% end %>
+
+
+</div>
+
+

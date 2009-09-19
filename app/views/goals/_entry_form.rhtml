@@ -1,0 +1,9 @@
+
+<%= form_remote_tag(:url=> { :action => 'create_entry'},
+							 :html => { :id => 'add_entry'},
+							 :loading => 'show_loader()',
+							:complete => 'hide_loader()') %>	
+							 <%= text_area 'entry', 'description', :rows => "5", 'value' => "", 'cols' => "45", 'id' => "entry-form"  %>
+							 <%= hidden_field("entry", "goal_id", 'value' => goal.id) %>
+							<%= image_submit_tag 'disk.png', :class => "save-image", :title => "Save this entry" %>	<br />
+</form>

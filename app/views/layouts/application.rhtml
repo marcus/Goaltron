@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+   <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />    
+		<title>Goaltron</title>
+		
+		<% controller_name = controller.controller_name %>
+		
+		<!-- lowpro needs to go after prototype and before application -->
+		<%= javascript_include_tag 'prototype', 'effects', 'dragdrop', 'controls', 'lowpro', 'application' %>
+		<% if controller_name == 'articles' %>
+			<%= javascript_include_tag 'articles' %>
+		<% end %>
+		
+		<%= stylesheet_link_tag("goaltron") %>
+		
+		<%= javascript_include_tiny_mce_if_used %>
+		<%= tiny_mce if using_tiny_mce? %>
+
+		<%= begin; render :partial => "layouts/"+controller_name; rescue; end; %>
+
+		<script type="text/javascript">window.onload = Timezone.set</script>
+	</head>
+	<body>
+
+			<div id ="overlay" style="display:none;"></div>
+			<img id="loadingImage" src="/images/ajax-loader.gif" style="position:absolute; display:none; z-index:100;">
+
+		<div id="logo">
+			<%= link_to (image_tag "goaltron-logo.jpg", :title => "Goaltron", :alt => "Goaltron Logo"), :controller => "/" %>
+		</div>
+		
+		<div id="user_session">
+			<% if session[:user] -%>
+				<%= link_to('Profile', edit_user_path(session[:user]) )%> |
+				<%= link_to('Logout', {:controller => 'sessions', :action => 'destroy'}, :method => 'post') %>
+			<% else -%>
+				<%= link_to 'login', {:controller => 'sessions', :action => 'new' }%> / 
+				<%= link_to 'register', {:controller => 'users', :action => 'new' }%>
+			<% end -%>
+		</div>
+
+		<% actionNav = {controller_name => {@action_name => 'here'}} %>		
+		<% controllerNav = {controller_name => 'here'} %>
+		<% daily_pages = ['daily_day_entries', 'journal_entries', 'journal_list', 'daily_goals'] %>
+		<% subNavs = {
+			'daily' => daily_pages,
+			'goals' => ['goals'],
+			'articles' => ['articles']
+		} %>
+
+		<div id="topnav">
+			<ul>
+				<li><%= link_to("Home", "/", :class => controllerNav['default']) %></li>
+				<li><%= link_to("Daily", "/daily", :class => controllerNav.values_at(*daily_pages).compact[0]) %></li>
+				<li><%= link_to("Goals", "/goals", :class => controllerNav['goals']) %><li>
+			</ul><br />
+		</div>
+		
+		<div id="subnav">
+			<ul>
+			<% if (subNavs['daily'].include?(controller_name)) -%>
+				<li><%= link_to("Dailies", "/daily", :class => controllerNav['daily_day_entries']) %><li>
+				<li><%= link_to("Today's Journal", "/journal", :class => controllerNav['journal_entries']) %><li>
+				<li><%= link_to("Journal Archive", "/journal/list", :class => controllerNav['journal_list']) %></li>
+				<li><%= link_to("Settings", "/daily/list", :class => controllerNav['daily_goals']) %></li>
+			<% elsif (subNavs['goals'].include?(controller_name)) -%>
+				<li><%= link_to("List Goals", "/goals/list", :class => controllerNav['goals']) %></li>
+			<% end -%>
+			</ul>
+			<br />
+		</div>
+
+		<% if flash[:notice] -%>
+			<p class="flash"><%= flash[:notice] %></p>
+		<% end -%>
+			
+		<div id="content"><%= yield :layout %></div>
+		
+
+		<div id="footer">Copyright 2008 <a href="mailto:marcus@vorwaller.net">Goaltron</a>.</div>
+		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+		</script>
+		<script type="text/javascript">
+		_uacct = "UA-99971-10";
+		urchinTracker();
+		</script>
+	</body>
+</html>
+

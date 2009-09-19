@@ -1,0 +1,9 @@
+<div id="add_goal_form"> 
+<% form_remote_tag(:url => {:action => 'create'}) do %> 
+	Name: <%= text_field 'daily_goal', 'name', :value => '', :size => 14, :maxlength => 14 %><br/>
+	<p class="instructions">One or two words, no more than 14 letters.</p>
+	Description: <%= text_field 'daily_goal', 'description', :value => '', :size => 43, :maxlength => 60 %><br />
+	<p class="instructions">In the form of a short question -- "Did I ... "</p>
+	<%= submit_tag 'Create' %>
+<% end %> 
+</div>

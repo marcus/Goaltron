@@ -1,0 +1,7 @@
+<div id="update_goal">
+	<% remote_form_for :goal, :url => {:action => 'edit', :id => @goal} do |form| %>
+		Goal Name: <%= form.text_field 'name', :size => 14, :maxlength => 14 %><br/>
+		Description: <%= form.text_field 'description', :size => 50, :maxlength => 60 %><br />
+		<%= submit_tag 'Save Changes' %> | <%= link_to_close_redbox 'Never Mind'%>
+	<% end %>
+</div>

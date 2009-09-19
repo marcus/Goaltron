@@ -1,0 +1,19 @@
+<% if @step_edited == false %>
+<% step_div = step.id.to_s.insert(0,"step_") %>
+<li id="<%= step_div %>">
+<% end %>
+	<span class="handle"><%= image_tag("drag.png", :title => "Drag to a new position", :class => 'drag-image' ) %></span>
+
+	<%= link_to_remote image_tag('/images/pencil.png', :border => 0, :title => "Edit this step", :class => 'edit-image' ), :url => { :action => 'show_step_edit', :id => step },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>		
+	
+	<%= link_to_remote check_box('step', 'completed_at'), :url => { :action => 'complete_step', :id => step },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>	
+	
+	<%= step.description %>
+		
+<% if @step_edited == false %>
+</li>
+<% end %>

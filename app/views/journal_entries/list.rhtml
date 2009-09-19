@@ -1,0 +1,12 @@
+<div id="journal_entry_list">
+	<% for entry in @journal_entries.entries %>
+		<% if entry.good != nil %>
+			<span class="date"><%= entry.entry_date.to_s(:long) %></span> 
+			<span class="title-sub-link"><%= link_to "(view)", :controller => 'journal_entries', :action => 'index', :date => entry.entry_date %></span>
+			<p>
+				<%= entry.good %>
+			</p>
+		<% end %>
+	<% end %>
+</div>
+<%= will_paginate @journal_entries %>

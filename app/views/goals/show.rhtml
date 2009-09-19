@@ -1,0 +1,48 @@
+	<div id="goal-title">
+		 <h1 class="goal-description"><%= in_place_editor_field :goal, :description, {}, { :highlightendcolor => '#000000' } %></h1>
+		 <p class="instructions"><%= in_place_editor_field :goal, :information, {}, :rows => 3 %></p>
+	</div>
+	
+	<div id="steps">
+		<h2>Steps to Accomplish Goal:<span id='step_busy' style="display:none"><%= image_tag "spinner.gif" %></span></h2>
+		<p class="instructions">Specific tasks to complete the goal.</p>
+		<div id="steps_list_container">
+			<ul id="steps_list">
+				<% for step in @steps %>
+					<%= render :partial => 'step_item', :locals => {:step => step} %>
+				<% end %>
+			</ul>
+			<%= render :partial => 'step_form', :locals => {:goal => @goal} %>
+		</div><!--end steps_list_container -->
+		
+		
+		<h2>Completed Steps</h2>
+		<div id ="completed_steps">
+			<ul id="completed_steps_list">
+				<% for step in @completed_steps %>
+					<%= render :partial => 'completed_step_item', :locals => {:step => step} %>
+				<% end %>
+			</ul>
+		</div><!--end completed_steps-->
+	</div><!--end steps-->
+</div>
+
+<div id="entries">
+	<h2>Goal Entries:<span id='entry_busy' style="display:none"><%= image_tag "spinner.gif" %></span></h2>
+	<p class="instructions">Write about how the goal is progressing.</p>		
+	<div id="entries_list_container">
+		<%= render :partial => 'entry_form', :locals => {:goal => @goal} %>
+		<ul id="entries_list">
+			<% for entry in @entries %>
+				<%= render :partial => 'entry_item', :locals => {:entry => entry} %>
+			<% end %>
+		</ul>
+	</div><!--end entries-list-->	
+	<% if @entries.length >= 15 %>
+		<%= link_to 'Show All Entries for this Goal', :controller => 'goals', :action => 'entries', :id => @goal %>
+	<% end %>
+</div>
+<!--TODO ajax pagination for goal entries exceeding the threshold and non-ajax for printing etc. -->
+
+<div id="sortable">
+<%= render :partial => 'sortable_element', :locals => {:goal => @goal} %>

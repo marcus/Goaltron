@@ -1,0 +1,28 @@
+<% if @articles.any? %>
+	<!-- begin article list -->
+	<table id="article-list" cellspacing="0" cellpadding="0">
+	  <thead>
+	    <tr>
+	      <th scope="col">Status</th>
+	      <th scope="col">Article (click title to edit)</th>
+	      <!--<th scope="col">Comments</th>-->
+	      <th scope="col">Published</th>
+	      <th scope="col">View</th>
+	    </tr>
+	  </thead>
+	  <tbody id="articles">
+	      <%= render :partial => 'article', :collection => @articles %>
+	  </tbody>
+	</table>
+	<!-- /end article list -->
+<% else -%>
+	Sorry, nothing here!
+<% end -%>
+
+<!-- begin pagination -->
+<div id="pagination">
+<% if @article_pages.page_count > 1 -%>
+Pages: <strong><%= pagination_links @article_pages, :params => { :action => 'index' } %></strong>
+<% end -%>
+</div>
+<!-- /end pagination -->

@@ -1,0 +1,10 @@
+<div id="sidebar_section_links">
+<h2>Sections</h2>
+	<ul>
+		<% for section in sections %>
+			<li>
+				<%= link_to_unless_current section.name, :controller => 'sections', :action => 'show', :id => section %>
+			</li>
+		<% end %>
+	</ul>
+</div>

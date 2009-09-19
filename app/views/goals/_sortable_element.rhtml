@@ -1,0 +1,4 @@
+<%= sortable_element 'steps_list',
+	:url => { :action => "sort_steps", :id => goal},
+	:complete => visual_effect(:highlight, 'steps_list'),
+	:handle => "handle" %>

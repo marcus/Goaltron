@@ -1,0 +1,13 @@
+<%= form_remote_tag(:url=> { :action => 'create_goal'},
+							:html => { :id => 'add_goal'},
+							:loading => 'show_loader()',
+							:complete => 'hide_loader()') %>		
+							<h2>Add a New Goal</h2>
+							<div id="long_term_goal_form">
+								Goal Title:<br /> 
+								<%= text_field 'goal', 'description', 'value' => ""%><br />
+								Goal Description:<br />
+								<%= text_area 'goal', 'information', 'rows' => "3", 'value' => "", 'cols' => "30" %><br />
+								<%= image_submit_tag 'disk.png', :class => "save-image", :title => "Save this goal", 'value' => "" %>
+							</div>
+</form>

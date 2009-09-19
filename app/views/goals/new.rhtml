@@ -1,0 +1,9 @@
+<h1>Create a new goal</h1>
+You can change this information later.<br />
+
+<%= start_form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+	 <%= image_submit_tag 'disk', :class => "save_image" %>	
+</form>
+
+<%= link_to 'Back', :action => 'list' %>

@@ -1,0 +1,17 @@
+<% if @entry_edited == false %>
+<% entry_div = entry.id.to_s.insert(0,"entry_") %>
+<% end %>
+
+<li id="<%= entry_div %>">
+	<%= link_to_remote image_tag('/images/pencil.png', :border => 0, :title => "Edit this entry", :align => "left", :class => 'edit-image'),
+	:url => { :action => 'show_entry_edit', :id => entry },
+	:loading => 'show_loader()',
+	:complete => 'hide_loader()' %>
+<span class="entry-date"><%= entry.created_at.to_s(:long) %></span>
+
+
+<div class="entry-item"><%= h entry.description %></div>
+
+<% if @entry_edited == false %>
+</li>
+<% end %>

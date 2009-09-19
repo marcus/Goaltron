@@ -1,0 +1,21 @@
+<table class="history">
+	<tr>
+		<td class="history-header"><!-- date column --></td>
+		<% for active_goal_entry in @sets[0].active_goal_entries %>
+			<td class="vertical-text" valign="bottom"><%= active_goal_entry.daily_goal.name.split("").join("<br />") %></td>
+		<% end %>
+	</tr>
+
+	<% for set in @sets %>
+	<tr>
+		<td><%= link_to set.day.to_s(:short), :controller => :daily_day_entries, :action => :index, :date => set.day %></td>
+		 <% for active_goal_entry in set.active_goal_entries %>
+			<td>
+			<% if active_goal_entry.completed == true%><%= image_tag 'complete-small.png', :title => active_goal_entry.daily_goal.name %><% else %>
+			<%= image_tag 'incomplete-small.png', :title => active_goal_entry.daily_goal.name %><% end %>
+			</td>
+		<% end %>
+	</tr>
+	<% end %>
+
+</table>

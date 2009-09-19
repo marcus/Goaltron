@@ -1,0 +1,22 @@
+<div id="container">
+	<% dismissible_message('how_to', { :message => "Do not show this again" }) do -%>
+		<p>Click the stars to mark a goal as completed for the day. Tomorrow you'll have a new set of stars.</p>
+	<% end -%>
+	<div id="navigate">
+		<%= render :partial => 'shared/directional_navigation', :locals => { :date => @date }%> 
+		<span class="date">
+			<%= @date.to_s(:long) %> 
+			<span class="title-sub-link"><%= link_to "Journal", :controller => 'journal_entries', :action => 'index', :date => @date %></span>
+		</span>
+	</div>
+	
+	<div id="goal_entries">
+		<%= render :partial => 'goal_entry', :collection => @goal_entries %>
+	</div>
+	
+	<div id="manage_goals">
+		<!-- | <%= link_to 'View History', :action => 'history' %>-->
+	</div>
+
+	<%= render :partial => 'score', :locals => { :score => @day_entry.calculated_score, :total => @goal_entries.length.to_s } %>
+</div>

@@ -1,0 +1,8 @@
+<h2>All entries for <%= link_to @goal.description, :action => 'show', :id => @goal %><span id='entry_busy' style="display:none"><%= image_tag "spinner.gif" %></span></h2>
+<div id="entries_solo">
+	<ul id="entries_list">
+		<% for entry in @entries %>
+			<%= render :partial => 'entry_item', :locals => {:entry => entry} %>
+		<% end %>
+	</ul>
+</div>

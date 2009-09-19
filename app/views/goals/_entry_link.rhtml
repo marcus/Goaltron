@@ -1,0 +1,3 @@
+<div id="add_entry"><img src="/images/add.png" border="0", class="add-image"><%= link_to_remote("Add an entry", :url =>{ :action => :add_entry },
+													   :loading => 'show_loader()',
+													:complete => 'hide_loader()') %></div>

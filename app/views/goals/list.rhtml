@@ -1,0 +1,25 @@
+<div id="goals">
+	<div id="current_goals">
+		<h2>Current Goals</h2>
+		<ul id="goals_list">
+			<% for goal in @goals %>
+				<%= render :partial => 'goal_item', :locals => {:goal => goal} %>
+			<% end %>
+		</ul>
+	</div>
+
+	<div id ="completed_goals">
+		<h2>Completed goals</h2>
+		<ul id="completed_goals_list">
+			<% for goal in @completed_goals %>
+				<%= render :partial => 'completed_goal_item', :locals => {:goal => goal} %>
+			<% end %>
+		</ul>
+	</div>
+</div>
+
+<div id="new_goal"><%= render :partial => 'goal_form', :locals => {:goal => @goal} %></div>
+
+<div id="sortable">
+<%= render :partial => 'sortable_goal', :locals => {:user => @user} %>
+</div>

@@ -1,0 +1,67 @@
+think:
+  description: Did I set aside time to think today?,
+  recommended: true
+
+zone:
+  description: Did I get in 'the zone' today?
+  recommended: true
+
+bold:
+  description: Did I do something bold today?
+  recommended: true
+
+learn:
+  description: Did I learn something new today?
+  recommended: true
+
+argue:
+  description: Did I debate anything today?
+  recommended: true
+
+child:
+  description: Did I spend time with a child today?
+  recommended: true
+
+outside:
+  description: Did I go outside today?
+  recommended: true
+
+recognize:
+  description: Did I take time to recognize what makes me happy?
+  recommended: true
+
+fix thoughts:
+  description: Did I recognize and eliminate broken thoughts?
+  recommended: true
+
+stress:
+  description: Did I act to eliminate stress?
+  recommended: true
+
+journal:
+  description: Did I write in my journal today?
+  recommended: false
+
+money:
+  description: Did I do something to improve our finanical situation?
+  recommended: false
+
+body:
+  description: Did I exercise today?
+  recommended: false
+
+sleep:
+  description: Did I sleep enough but not too much?
+  recommended: true
+
+social:
+  description: Did I connect with friends/family today?
+  recommended: false
+
+service:
+  description: Did I serve someone today?
+  recommended: false
+
+time:
+  description: Did I avoid wasting time?
+  recommended: false
