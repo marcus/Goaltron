@@ -2,7 +2,7 @@ require 'will_paginate/core_ext'
 
 module WillPaginate
   # A mixin for ActiveRecord::Base. Provides +per_page+ class method
-  # and makes +paginate+ finders possible with some method_missing magic.
+  # and hooks things up to provide paginating finders.
   #
   # Find out more in WillPaginate::Finder::ClassMethods
   #
@@ -18,9 +18,9 @@ module WillPaginate
 
     # = Paginating finders for ActiveRecord models
     # 
-    # WillPaginate adds +paginate+ and +per_page+ methods to ActiveRecord::Base
-    # class methods and associations. It also hooks into +method_missing+ to
-    # intercept pagination calls to dynamic finders such as
+    # WillPaginate adds +paginate+, +per_page+ and other methods to
+    # ActiveRecord::Base class methods and associations. It also hooks into
+    # +method_missing+ to intercept pagination calls to dynamic finders such as
     # +paginate_by_user_id+ and translate them to ordinary finders
     # (+find_all_by_user_id+ in this case).
     # 
@@ -61,7 +61,7 @@ module WillPaginate
       #
       # All other options (+conditions+, +order+, ...) are forwarded to +find+
       # and +count+ calls.
-      def paginate(*args, &block)
+      def paginate(*args)
         options = args.pop
         page, per_page, total_entries = wp_parse_options(options)
         finder = (options[:finder] || 'find').to_s
@@ -79,11 +79,39 @@ module WillPaginate
           
           args << find_options
           # @options_from_last_find = nil
-          pager.replace send(finder, *args, &block)
+          pager.replace(send(finder, *args) { |*a| yield(*a) if block_given? })
           
           # magic counting for user convenience:
           pager.total_entries = wp_count(count_options, args, finder) unless pager.total_entries
         end
+      end
+
+      # Iterates through all records by loading one page at a time. This is useful
+      # for migrations or any other use case where you don't want to load all the
+      # records in memory at once.
+      #
+      # It uses +paginate+ internally; therefore it accepts all of its options.
+      # You can specify a starting page with <tt>:page</tt> (default is 1). Default
+      # <tt>:order</tt> is <tt>"id"</tt>, override if necessary.
+      #
+      # See {Faking Cursors in ActiveRecord}[http://weblog.jamisbuck.org/2007/4/6/faking-cursors-in-activerecord]
+      # where Jamis Buck describes this and a more efficient way for MySQL.
+      def paginated_each(options = {})
+        options = { :order => 'id', :page => 1 }.merge options
+        options[:page] = options[:page].to_i
+        options[:total_entries] = 0 # skip the individual count queries
+        total = 0
+        
+        begin 
+          collection = paginate(options)
+          with_exclusive_scope(:find => {}) do
+            # using exclusive scope so that the block is yielded in scope-free context
+            total += collection.each { |item| yield item }.size
+          end
+          options[:page] += 1
+        end until collection.size < collection.per_page
+        
+        total
       end
       
       # Wraps +find_by_sql+ by simply adding LIMIT and OFFSET to your SQL string
@@ -102,7 +130,7 @@ module WillPaginate
       # 
       def paginate_by_sql(sql, options)
         WillPaginate::Collection.create(*wp_parse_options(options)) do |pager|
-          query = sanitize_sql(sql)
+          query = sanitize_sql(sql.dup)
           original_query = query.dup
           # add limit, offset
           add_limit! query, :offset => pager.offset, :limit => pager.per_page
@@ -113,7 +141,7 @@ module WillPaginate
             count_query = original_query.sub /\bORDER\s+BY\s+[\w`,\s]+$/mi, ''
             count_query = "SELECT COUNT(*) FROM (#{count_query})"
             
-            unless ['oracle', 'oci'].include?(self.connection.adapter_name.downcase)
+            unless self.connection.adapter_name =~ /^(oracle|oci$)/i
               count_query << ' AS count_table'
             end
             # perform the count query
@@ -133,10 +161,14 @@ module WillPaginate
 
     protected
       
-      def method_missing_with_paginate(method, *args, &block) #:nodoc:
+      def method_missing_with_paginate(method, *args) #:nodoc:
         # did somebody tried to paginate? if not, let them be
         unless method.to_s.index('paginate') == 0
-          return method_missing_without_paginate(method, *args, &block) 
+          if block_given?
+            return method_missing_without_paginate(method, *args) { |*a| yield(*a) }
+          else
+            return method_missing_without_paginate(method, *args) 
+          end
         end
         
         # paginate finders are really just find_* with limit and offset
@@ -149,16 +181,30 @@ module WillPaginate
         options[:finder] = finder
         args << options
         
-        paginate(*args, &block)
+        paginate(*args) { |*a| yield(*a) if block_given? }
       end
 
       # Does the not-so-trivial job of finding out the total number of entries
       # in the database. It relies on the ActiveRecord +count+ method.
       def wp_count(options, args, finder)
         excludees = [:count, :order, :limit, :offset, :readonly]
-        unless options[:select] and options[:select] =~ /^\s*DISTINCT\b/i
+        excludees << :from unless ActiveRecord::Calculations::CALCULATIONS_OPTIONS.include?(:from)
+
+        # we may be in a model or an association proxy
+        klass = (@owner and @reflection) ? @reflection.klass : self
+
+        # Use :select from scope if it isn't already present.
+        options[:select] = scope(:find, :select) unless options[:select]
+
+        if options[:select] and options[:select] =~ /^\s*DISTINCT\b/i
+          # Remove quoting and check for table_name.*-like statement.
+          if options[:select].gsub('`', '') =~ /\w+\.\*/
+            options[:select] = "DISTINCT #{klass.table_name}.#{klass.primary_key}"
+          end
+        else
           excludees << :select # only exclude the select param if it doesn't begin with DISTINCT
         end
+
         # count expects (almost) the same options as find
         count_options = options.except *excludees
 
@@ -166,19 +212,23 @@ module WillPaginate
         # this allows you to specify :select, :order, or anything else just for the count query
         count_options.update options[:count] if options[:count]
 
+        # forget about includes if they are irrelevant (Rails 2.1)
+        if count_options[:include] and
+            klass.private_methods.include_method?(:references_eager_loaded_tables?) and
+            !klass.send(:references_eager_loaded_tables?, count_options)
+          count_options.delete :include
+        end
+
         # we may have to scope ...
         counter = Proc.new { count(count_options) }
-
-        # we may be in a model or an association proxy!
-        klass = (@owner and @reflection) ? @reflection.klass : self
 
         count = if finder.index('find_') == 0 and klass.respond_to?(scoper = finder.sub('find', 'with'))
                   # scope_out adds a 'with_finder' method which acts like with_scope, if it's present
                   # then execute the count with the scoping provided by the with_finder
                   send(scoper, &counter)
-                elsif match = /^find_(all_by|by)_([_a-zA-Z]\w*)$/.match(finder)
+                elsif finder =~ /^find_(all_by|by)_([_a-zA-Z]\w*)$/
                   # extract conditions from calls like "paginate_by_foo_and_bar"
-                  attribute_names = extract_attribute_names_from_match(match)
+                  attribute_names = $2.split('_and_')
                   conditions = construct_attributes_from_arguments(attribute_names, args)
                   with_scope(:find => { :conditions => conditions }, &counter)
                 else
